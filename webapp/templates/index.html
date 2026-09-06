@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Risk Command — Predictive Traffic Safety</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <p class="brand-eyebrow">Predictive Traffic Safety System</p>
+    <h1 class="brand-title">Road Risk Command</h1>
+  </div>
+  <div class="live-badge"><span class="live-dot"></span> Model live — synthetic demo dataset</div>
+</header>
+
+<section class="kpi-strip" id="kpi-strip">
+  <!-- filled by JS -->
+</section>
+
+<div class="lane-divider"></div>
+
+<main class="container">
+
+  <div class="section-header">
+    <h2 class="section-title">Risk Heatmap</h2>
+    <span class="section-sub">Accident density &amp; fatality-weighted intensity, grid-aggregated</span>
+  </div>
+
+  <div class="map-panel">
+    <div id="risk-map"></div>
+    <div class="map-legend">
+      <span>Low risk</span>
+      <span class="legend-gradient"></span>
+      <span>High risk</span>
+      <span style="margin-left:auto;">Click a black spot marker for details</span>
+    </div>
+  </div>
+
+  <div class="grid-two">
+    <div class="panel">
+      <div class="section-header">
+        <h2 class="section-title">Top Black Spots</h2>
+        <span class="section-sub">Ranked by risk score</span>
+      </div>
+      <div id="blackspot-list"><!-- filled by JS --></div>
+    </div>
+
+    <div class="panel">
+      <div class="section-header">
+        <h2 class="section-title">Risk by Time of Day</h2>
+        <span class="section-sub">Aggregated across all regions</span>
+      </div>
+      <div class="chart-wrap"><canvas id="time-chart"></canvas></div>
+      <div class="time-note" id="time-note"><!-- filled by JS --></div>
+    </div>
+  </div>
+
+  <div class="predict-panel">
+    <div class="section-header">
+      <h2 class="section-title">Severity Prediction Tool</h2>
+      <span class="section-sub">Live inference from the trained RandomForest classifier</span>
+    </div>
+
+    <div class="predict-grid">
+      <div class="field">
+        <label for="road_type">Road Type</label>
+        <select id="road_type">
+          <option>Highway</option><option>Urban Road</option>
+          <option>Rural Road</option><option>Residential</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="weather">Weather</label>
+        <select id="weather">
+          <option>Clear</option><option>Rainy</option><option>Foggy</option>
+          <option>Snowy</option><option>Windy</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="road_condition">Road Condition</label>
+        <select id="road_condition">
+          <option>Dry</option><option>Wet</option><option>Icy</option><option>Snow-covered</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="time_of_day">Time of Day</label>
+        <select id="time_of_day">
+          <option>Morning</option><option>Afternoon</option>
+          <option>Evening</option><option selected>Night</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="speed_limit">Speed Limit (km/h)</label>
+        <input type="number" id="speed_limit" value="80" min="20" max="140">
+      </div>
+      <div class="field">
+        <label for="alcohol_level">Driver Alcohol Level</label>
+        <input type="number" id="alcohol_level" value="0.05" min="0" max="0.4" step="0.01">
+      </div>
+      <div class="field">
+        <label for="fatigue">Driver Fatigue</label>
+        <select id="fatigue">
+          <option value="0">No</option><option value="1">Yes</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="visibility">Visibility Level (0-10)</label>
+        <input type="number" id="visibility" value="6" min="0" max="10">
+      </div>
+    </div>
+
+    <div class="predict-actions">
+      <button class="btn-predict" id="predict-btn">Predict Severity</button>
+      <div class="predict-result" id="predict-result">
+        <span class="severity-badge" id="severity-badge">—</span>
+        <span class="confidence-text" id="confidence-text"></span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="lane-divider"></div>
+
+<p class="footer-note">
+  Road Accident Prediction System — ML + GIS prototype · Coordinates are synthetically generated per-country<br>
+  (dataset has no real GPS field) · Severity labels re-derived from risk factors for a trainable signal · Built for academic demonstration
+</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
